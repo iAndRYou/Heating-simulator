@@ -6,6 +6,8 @@ from heat_transfer.models.window import *
 from heat_transfer.models.door import *
 from heat_transfer.models.object_layer import *
 from heat_transfer.models.room import *
+from heat_transfer.models.house import *
+from heat_transfer.models.heating_systems import *
 
 
 wall = Wall([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 100)
@@ -27,4 +29,8 @@ d = Door([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)]
 
 
 room = Room([wall, wall2, wall, wall2], r, f, 20)
+
+hs = Radiator(1000, 30)
+room.heating_systems.append(hs)
 print(room.volume())
+house = House([room])
