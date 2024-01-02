@@ -13,5 +13,6 @@ conduction.update_temperature(wall)
 
 print(wall.temperature_1)
 print(wall.temperature_2)
-print(wall.get_thickness())
-print(wall.get_total_rho_cp())
+
+
+
