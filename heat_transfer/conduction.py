@@ -13,5 +13,6 @@ class Conduction:
         layer1, layer2 = wall.layers[0], wall.layers[-1]
         delta_temperature_1 = heat_flux_density * self.time_step / (layer1.specific_heat_capacity * layer1.density * layer1.thickness)
         delta_temperature_2 = heat_flux_density * self.time_step / (layer2.specific_heat_capacity * layer2.density * layer2.thickness)
-        wall.temperature_1 -= delta_temperature_1
-        wall.temperature_2 += delta_temperature_2
+        # wall.temperature_1 -= delta_temperature_1
+        # wall.temperature_2 += delta_temperature_2
+        return delta_temperature_1, delta_temperature_2
