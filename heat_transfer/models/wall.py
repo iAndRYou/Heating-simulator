@@ -1,4 +1,5 @@
 from typing import List, Dict, Tuple, Any
+from .object_layer import *
 
 class Wall:
     def __init__(self, layers, length, height, temperature_1, temperature_2):
