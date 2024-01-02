@@ -2,12 +2,12 @@ from typing import List, Dict, Tuple, Any
 from .object_layer import *
 from ..generic import *
 
-class Wall(MultiLayerObject):
+class Wall(MultiLayerObject, SurfaceAreaObject):
     def __init__(self, layers, length, height, temperature_1, temperature_2, openings = []):
         MultiLayerObject.__init__(self, layers, temperature_1, temperature_2)
-        length = length
-        height = height
-        openings : List[Opening] = openings
+        self.length = length
+        self.height = height
+        self.openings : List[Opening] = openings
 
     
     

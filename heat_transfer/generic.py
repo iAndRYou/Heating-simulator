@@ -8,6 +8,11 @@ class MultiLayerObject:
     def thickness(self):
         return sum(layer.thickness for layer in self.layers)
 
-class Opening:
+class SurfaceAreaObject:
     def get_surface_area(self):
         return 0
+
+class Opening(SurfaceAreaObject):
+    def get_surface_area(self):
+        return 0
+    
