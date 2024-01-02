@@ -12,6 +12,9 @@ class Wall(MultiLayerObject):
     def thickness(self):
         return sum(layer.thickness for layer in self.layers)
     
+    def get_surface_area(self):
+        return self.length * self.height
+    
    
          
 
