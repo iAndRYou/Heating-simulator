@@ -16,5 +16,11 @@ class Opening(MultiLayerObject):
     def get_surface_area(self):
         return 0
     
+class HeatingSystem:
+    def __init__(self, name, power, temperature):
+        self.name = name
+        self.power = power
+        self.temperature = temperature
+    
 
     
