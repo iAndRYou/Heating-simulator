@@ -1,5 +1,5 @@
 from ..generic import *
-class Window(Opening, MultiLayerObject):
+class Window(Opening):
     def __init__(self, layers, length, height, temperature_1, temperature_2):
         MultiLayerObject.__init__(self, layers, temperature_1, temperature_2)
         self.length = length
