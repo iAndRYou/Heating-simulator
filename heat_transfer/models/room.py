@@ -53,6 +53,49 @@ class Room(Model3D):
         self.make_box()
         self.shape.opacity = 0.7
         self.shape.color = self.map_temperature_to_color(self.temperature)
+        self.add_openings()
+        
+    
+    def add_openings(self):
+        for i in range(len(self.walls)):
+            wall = self.walls[i]
+            if i % 2 == 0:
+                z_offset = self.width / 2
+                z_offset *= -1 if i == 0 else 1
+                
+                openings = wall.openings
+                num_openings = len(openings)
+                distance_between_windows = wall.length / (num_openings + 1)
+                initial_position = distance_between_windows - wall.length / 2
+
+                print(f"num_openings: {num_openings}, distance_between_windows: {distance_between_windows}, initial_position: {initial_position}")
+                for j in range(num_openings):
+                    opening = openings[j]
+                    if hasattr(opening, "parent"):
+                        continue
+                    opening_x_position = initial_position + j * distance_between_windows
+                    opening.initModel3D(Model3DParams(local_pos=vector(opening_x_position, 0, z_offset), size=vector(opening.length, opening.height, 0.1), parent=self))
+                    opening.make_box()
+            else:
+                x_offset = self.length / 2
+                x_offset *= -1 if i == 1 else 1
+                
+                openings = wall.openings
+                num_openings = len(openings)
+                distance_between_windows = wall.length / (num_openings + 1)
+                initial_position = distance_between_windows - wall.length / 2
+
+                for j in range(num_openings):
+                    opening = openings[j]
+                    if hasattr(opening, "parent"):
+                        continue
+                    opening_z_position = initial_position + j * distance_between_windows
+                    opening.initModel3D(Model3DParams(local_pos=vector(x_offset, 0, opening_z_position), size=vector(opening.length, opening.height, 0.1), rot=(pi/2, vector(0, 1, 0)), parent=self))
+                    opening.make_box()
+                    
+                    
+            
+        
        
     
     def update_color(self):
