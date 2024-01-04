@@ -1,18 +1,20 @@
 from typing import List, Dict, Tuple, Any
-from .models.wall import *
+from .generic import *
+from .model_parameters import *
 
 
 class Conduction:
-    def __init__(self, time_step : float):
-        self.time_step = time_step
-        
-    def update_temperature(self, wall : Wall):
-        total_resistance = sum(layer.thickness / layer.conductivity for layer in wall.layers)
-        heat_flux_density = (wall.temperature_1 - wall.temperature_2) / total_resistance
+    @staticmethod
+    def update_temperature(multilayer_object: MultiLayerObject):
+        prev_node = None
+        for layer in multilayer_object.layers:
+            for node in layer.nodes:
+                if prev_node is None:
+                    prev_node = node
+                    continue
 
-        layer1, layer2 = wall.layers[0], wall.layers[-1]
-        delta_temperature_1 = heat_flux_density * self.time_step / (layer1.specific_heat_capacity * layer1.density * layer1.thickness)
-        delta_temperature_2 = heat_flux_density * self.time_step / (layer2.specific_heat_capacity * layer2.density * layer2.thickness)
-        # wall.temperature_1 -= delta_temperature_1
-        # wall.temperature_2 += delta_temperature_2
-        return delta_temperature_1, delta_temperature_2
+                heat_flux = layer.material.conductivity * (node.temperature - prev_node.temperature) / NODE_DISTANCE
+                prev_node.heat_flow(heat_flux * TIME_STEP * multilayer_object.area)
+                node.heat_flow(-heat_flux * TIME_STEP * multilayer_object.area)
+                
+                prev_node = node

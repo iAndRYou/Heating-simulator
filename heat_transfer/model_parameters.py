@@ -1,0 +1,2 @@
+TIME_STEP = 1 # s
+NODE_DISTANCE = 0.001 # m
