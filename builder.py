@@ -12,7 +12,7 @@ from heat_transfer.generic import *
 from vpython import *
 from dataclasses import dataclass
 
-def build():
+def build_a_house():
     
     wood = Material("Wood", 0.12, 500, 1.76)
     plank = ObjectLayer(0.1, wood)
@@ -50,11 +50,12 @@ def build():
     floor2 = Floor([plank], 20, 20, 20, 20)
 
     room1 = Room([wall1, wall2, wall3, wall4], roof, floor, 10, [], "Room", pos=vector(0, 0, 0))
-    room1.make_room_model()
+
 
     room2 = Room([wall5, wall4, wall6, wall7], roof2, floor2, 26,  [], "Room2", pos=vector(15.01, 0, 0))
-    room2.make_room_model()
-
+   
+    house = House([room1, room2], vector(-10, 0, 0))
+    house.init()
     """
 
     room = Room([wall1, wall2, wall3, wall4], roof, floor, -20, [], "Room", pos=vector(0, 0, 0))
