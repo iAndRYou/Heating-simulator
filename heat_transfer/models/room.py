@@ -51,24 +51,15 @@ class Room(Model3D):
     
     def make_room_model(self):
         self.make_box()
-        self.shape.opacity = 0.85
-        self.shape.color = color.red
-        for i in range(len(self.walls)):
-            if(self.walls[i].parent != None):
-                continue
-            rot = (0, vector(0, 0, 1))
-            if(i % 2 == 0):
-                z = self.walls[1].length/2
-                z = z if i < 2 else z * (-1)
-                local_pos = vector(0, 0, z)
-            else:
-                x = self.walls[0].length/2
-                x = x if i < 2 else x * (-1)
-                local_pos = vector(x, 0, 0)
-                rot=(pi/2, vector(0, 1, 0))
-            self.walls[i].local_pos = local_pos
-            self.walls[i].rot = rot
-            self.walls[i].set_parent(self)
-            self.walls[i].make_box()
+        self.shape.opacity = 0.7
+        self.shape.color = self.map_temperature_to_color(self.temperature)
+       
+    
+    def update_color(self):
+        self.shape.color = self.map_temperature_to_color(self.temperature)
+        
+    def on_temperature_change(self, delta_temperature):
+        self.temperature += delta_temperature
+        self.update_color()
             
         

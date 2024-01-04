@@ -1,6 +1,7 @@
 from vpython import *
 from dataclasses import dataclass
 from typing import List, Tuple, Any
+from colorsys import hsv_to_rgb
 
 class MultiLayerObject:
     def __init__(self, layers, temperature_1, temperature_2):
@@ -56,8 +57,17 @@ class Model3D:
             
     def make_box(self):
         self.update_position()
-        self.shape = box(pos=self.pos, size=self.size, opacity=0.85)
+        self.shape = box(pos=self.pos, size=self.size, opacity=0.8)
         self.shape.rotate(angle=self.rot[0], axis=self.rot[1])
+        
+    def map_temperature_to_color(self, temperature):
+        normalized_temperature = (temperature + 60) / 100
+        h = 1 * (1 - normalized_temperature)  # Wartość H dla HSV
+        s = 0.8  # Nasycenie
+        v = 1.0  # Jasność
+        
+        color_rgb = hsv_to_rgb(h, s, v)
+        return vector(color_rgb[0], color_rgb[1], color_rgb[2])
     
     
 
