@@ -13,38 +13,41 @@ from vpython import *
 from dataclasses import dataclass
 
 def build():
+    
+    wood = Material("Wood", 0.12, 500, 1.76)
+    plank = ObjectLayer(0.1, wood)
     # windows and doors
-    window = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window2 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window3 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window4 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window5 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window6 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window7 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window8 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    window9 = Window([ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 20)
-    door2 = Door([ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 20)
-    door3 = Door([ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 20)
-    door = Door([ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 20)
+    window = Window([plank], 1, 1, 20, 20)
+    window2 = Window([plank], 1, 1, 20, 20)
+    window3 = Window([plank], 1, 1, 20, 20)
+    window4 = Window([plank], 1, 1, 20, 20)
+    window5 = Window([plank], 1, 1, 20, 20)
+    window6 = Window([plank], 1, 1, 20, 20)
+    window7 = Window([plank], 1, 1, 20, 20)
+    window8 = Window([plank], 1, 1, 20, 20)
+    window9 = Window([plank], 1, 1, 20, 20)
+    door2 = Door([plank], 1, 2, 20, 20)
+    door3 = Door([plank], 1, 2, 20, 20)
+    door = Door([plank], 1, 2, 20, 20)
 
 
     # walls, roof, floor
     # wall4 shared between room1 and room2
     
-    wall1 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 10, 4, 20, 20, [window, door])
-    wall2 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 4, 20, 20, [window2, window3, window4])
-    wall3 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 10, 4, 20, 20, [window5, window6, window7, window8, window9])
-    wall4 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 4, 20, 20, [door2])
+    wall1 = Wall([plank], 10, 4, 20, 20, [window, door])
+    wall2 = Wall([plank], 20, 4, 20, 20, [window2, window3, window4])
+    wall3 = Wall([plank], 10, 4, 20, 20, [window5, window6, window7, window8, window9])
+    wall4 = Wall([plank], 20, 4, 20, 20, [door2])
     
-    wall5 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 4, 20, 20, [door3])
-    wall6 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 4, 20, 20)
-    wall7 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 4, 20, 20)
+    wall5 = Wall([plank], 20, 4, 20, 20, [door3])
+    wall6 = Wall([plank], 20, 4, 20, 20)
+    wall7 = Wall([plank], 20, 4, 20, 20)
 
-    roof = Roof([ObjectLayer(0.1, 0.026, 780, 500)], 10, 20, 20, 20)
-    floor = Floor([ObjectLayer(0.1, 0.026, 780, 500)], 10, 20, 20, 20)
+    roof = Roof([plank], 10, 20, 20, 20)
+    floor = Floor([plank], 10, 20, 20, 20)
 
-    roof2 = Roof([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, 20, 20)
-    floor2 = Floor([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, 20, 20)
+    roof2 = Roof([plank], 20, 20, 20, 20)
+    floor2 = Floor([plank], 20, 20, 20, 20)
 
     room1 = Room([wall1, wall2, wall3, wall4], roof, floor, 10, [], "Room", pos=vector(0, 0, 0))
     room1.make_room_model()

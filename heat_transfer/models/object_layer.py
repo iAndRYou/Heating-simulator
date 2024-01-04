@@ -1,6 +1,6 @@
+from .material import *
+
 class ObjectLayer:
-    def __init__(self, thickness, conductivity, density, specific_heat_capacity):
+    def __init__(self, thickness, material : Material):
         self.thickness : float = thickness  # (m)
-        self.conductivity : float = conductivity  # Thermal conductivity coefficient (W/mK)
-        self.density : float = density  # Material density (kg/m³)
-        self.specific_heat_capacity : float = specific_heat_capacity  # Specific heat capacity of the material (J/(kgK))
+        self.material : Material = material
