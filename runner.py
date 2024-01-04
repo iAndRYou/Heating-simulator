@@ -8,29 +8,27 @@ from heat_transfer.models.object_layer import *
 from heat_transfer.models.room import *
 from heat_transfer.models.house import *
 from heat_transfer.models.heating_systems import *
+from heat_transfer.generic import *
+from vpython import *
+from dataclasses import dataclass
 
 
-wall = Wall([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 100)
-wall2 = Wall([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 2, 1, 20, 100)
-conduction = Conduction(1)
-conduction.update_temperature(wall)
+wall1 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(1, 1, 0)))
+wall2 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(2, 1, 0)))
+wall3 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(1, 1, 0)))
+wall4 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(2, 1, 0)))
+wall5 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(2, 1, 0)))
+wall6 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(2, 1, 0)))
+wall7 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(2, 1, 0)))
+wall8 = Wall([ObjectLayer(0.1, 0.026, 780, 500)], 20, 20, [], Model3DParams(local_pos=vector(0, 0, 0), size=vector(2, 1, 0)))
+
+roof = Roof([ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 20)
+floor = Floor([ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 20)
 
 
-# for i in range(10000):
-#     conduction.update_temperature(wall)
-
-print(wall.temperature_1)
-print(wall.temperature_2)
-print(wall.get_surface_area())
-r =Roof([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 100)
-f = Floor([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 1, 2, 20, 100)
-w = Window([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 100)
-d = Door([ObjectLayer(0.05, 0.026, 780, 500), ObjectLayer(0.1, 0.026, 780, 500)], 1, 1, 20, 100)
-
-
-room = Room([wall, wall2, wall, wall2], r, f, 20)
-
-hs = Radiator(1000, 30)
-room.heating_systems.append(hs)
-print(room.volume())
-house = House([room])
+roof2 = Roof([ObjectLayer(0.1, 0.026, 780, 500)], 2, 2, 20, 20)
+floor2 = Floor([ObjectLayer(0.1, 0.026, 780, 500)], 2, 2, 20, 20)
+room2 = Room([wall8, wall5, wall6, wall7], roof2, floor2, [], "Room2", pos=vector(2, 0, 0))
+room2.make_room_model()
+room = Room([wall1, wall2, wall3, wall4], roof, floor, [], "Room", pos=vector(0, 0, 0))
+room.make_room_model()
