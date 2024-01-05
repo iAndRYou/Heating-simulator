@@ -62,12 +62,13 @@ class Object3D:
         self.update_position()
          
             
-    def make_box(self, color=None, temperature=None, opacity=0.8):
+    def make_box(self, color=vector(255, 255, 255), temperature=None, opacity=0.8):
         if(temperature != None):
             color = self.map_temperature_to_color(temperature)
         self.shape = box(pos=self.global_position, size=self.size, opacity=opacity, color=color)
         
-    def map_temperature_to_color(self, temperature):
+    def map_temperature_to_color(self, temperature_kelvin):
+        temperature = temperature_kelvin - 273.15 # convert to celsius
         normalized_temperature = (temperature + 50) / 100 # temp scale from -50 to 50
         h = 1 * (1 - normalized_temperature)  # H 
         s = 0.8  # Saturation
@@ -76,9 +77,7 @@ class Object3D:
         color_rgb = hsv_to_rgb(h, s, v)
         return vector(color_rgb[0], color_rgb[1], color_rgb[2])
    
-    def on_temperature_change(self, temperature):
-        if self.shape:
-            self.shape.color = self.map_temperature_to_color(temperature)
+    
             
 #utility functions 
 def tuple_to_vector(tup):
@@ -91,7 +90,7 @@ class MultiLayerObject(Object3D):
     width: float
     border: list["UniformTemperatureObject"]
 
-    def __init__(self, height, width, init_temperature_celsius: float, layers: list[list[float, "Material"]], border: list["UniformTemperatureObject"], openings: dict[tuple[float, float], "MultiLayerObject"] = dict(),
+    def __init__(self, height, width, init_temperature_celsius: float, layers: list[list[float, "Material"]], border: list["UniformTemperatureObject"], openings: list["MultiLayerObject"] = [], #dict[tuple[float, float], "MultiLayerObject"] = dict(),
                 local_position = vector(0, 0, 0), parent: "Object3D" = None):
         self.height = height
         self.width = width

@@ -6,14 +6,14 @@ from vpython import *
 
 
 
-room1 = Room((3, 3, 3), 
+room1 = Room((6, 3, 3), 
              40,
              local_position=vector(0, 0, 0),
              parent=None)
 
-room2 = Room((3, 3, 3),
+room2 = Room((3, 3, 5),
             20,
-            local_position=vector(3, 0, 0),
+            local_position=vector(6, 0, 0),
             parent=None)
 
 house = House([room1, room2],
@@ -21,7 +21,7 @@ house = House([room1, room2],
               wall_layers=[(0.03, Material(2000, 800, 1)), (0.07, Material(2500, 800, 1.4))],
               roof_layers=[(0.1, Material(1225, 1005, 0.024))],
               floor_layers=[(0.1, Material(1225, 1005, 0.024))],
-              local_position=vector(10, 0, 0))
+              local_position=vector(-1.5, 0, 0))
 
 room1.make_box(temperature=room1.temperature)
 room2.make_box(temperature=room2.temperature)
@@ -33,12 +33,12 @@ node_temperatures1 = [node.temperature for node in house.rooms[0].walls[0].nodes
 for _ in range(10000):
     house.update_temperature()
 
-node_temperatures2 = [node.temperature for node in house.rooms[0].walls[0].nodes]
+# node_temperatures2 = [node.temperature for node in house.rooms[0].walls[0].nodes]
 
-# compare the node temperature distributions
-plt.plot(range(len(node_temperatures1)), node_temperatures1)
-plt.plot(range(len(node_temperatures2)), node_temperatures2)
-plt.show()
+# # compare the node temperature distributions
+# plt.plot(range(len(node_temperatures1)), node_temperatures1)
+# plt.plot(range(len(node_temperatures2)), node_temperatures2)
+# plt.show()
 
 print()
 

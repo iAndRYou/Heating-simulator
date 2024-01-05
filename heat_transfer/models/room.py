@@ -21,3 +21,7 @@ class Room(UniformTemperatureObject, Object3D):
         self.roof = None
         self.floor = None
         Object3D.__init__(self, dimensions=tuple_to_vector(dimensions), local_position=local_position, parent=parent)
+    
+    def on_temperature_change(self):
+        if self.shape:
+            self.shape.color = self.map_temperature_to_color(self.temperature)
