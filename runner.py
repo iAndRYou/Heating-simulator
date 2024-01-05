@@ -37,21 +37,13 @@ room3.make_box(temperature=room3.temperature)
 house.print_rooms_temperatures()
 node_temperatures1 = [node.temperature for node in house.rooms[0].walls[0].nodes]
 
-for _ in range(5000):
-    house.update_temperature()
 
-Config().TIME_STEP = 30
+for _ in range(15):
+    # time step - 5s, so the whole loop is 5 hours
+    for __ in range(3600):
+        house.update_temperature()
 
-for _ in range(50000):
-    house.update_temperature()
+    house.update_visuals()
+    house.print_rooms_temperatures()
 
-# node_temperatures2 = [node.temperature for node in house.rooms[0].walls[0].nodes]
-
-# # compare the node temperature distributions
-# plt.plot(range(len(node_temperatures1)), node_temperatures1)
-# plt.plot(range(len(node_temperatures2)), node_temperatures2)
-# plt.show()
-
-print()
-
-house.print_rooms_temperatures()
+input()

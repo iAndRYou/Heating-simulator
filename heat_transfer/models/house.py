@@ -50,9 +50,10 @@ class House(Object3D):
         print("GROUND:", GROUND.temperature - 273.15, "°C")
     
     def update_temperature(self):
+        HeatFlow.update_temperature([wall for room in self.rooms for wall in room.walls])
+    
+    def update_visuals(self):
         for room in self.rooms:
-            for wall in room.walls:
-                HeatFlow.update_temperature_at_interface(wall)
             room.on_temperature_change()
     
   

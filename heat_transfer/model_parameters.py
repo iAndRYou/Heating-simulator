@@ -1,4 +1,4 @@
-TIME_STEP = 0.5 # s
+TIME_STEP = 5 # s
 NODE_DISTANCE = 0.01 # m
 
 class Config:
