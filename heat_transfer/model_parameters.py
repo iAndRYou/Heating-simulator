@@ -15,3 +15,4 @@ class Config:
 
 Config().TIME_STEP = TIME_STEP
 Config().NODE_DISTANCE = NODE_DISTANCE
+
