@@ -93,3 +93,4 @@ class House(Object3D):
             if(i%2==1):
                 wall.openings[j].shape.rotate(angle=pi/2, axis=vector(0, 1, 0))
         
+

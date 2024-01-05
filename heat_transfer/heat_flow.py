@@ -1,14 +1,28 @@
 from typing import List, Dict, Tuple, Any
 from .generic import *
-from .model_parameters import *
+from .model_parameters import Config
 from .models.room import *
 
 class HeatFlow:
     @staticmethod
+    def update_temperature(interfaces: list[MultiLayerObject]):
+        object_heat: dict[UniformTemperatureObject, float] = dict()
+        for interface in interfaces:
+            for object, heat in HeatFlow.update_temperature_at_interface(interface).items():
+                if object in object_heat:
+                    object_heat[object] += heat
+                else:
+                    object_heat[object] = heat
+
+        for object, heat in object_heat.items():
+            object.update_temperature(heat)
+
+    @staticmethod
     def update_temperature_at_interface(interface: MultiLayerObject):
         prev_node = None
-        node_heat = {node: 0 for node in interface.nodes} # net heat for wall nodes
-        border_heat = {border: 0 for border in interface.border} # net heat for bordering objects
+        object_heat: dict[UniformTemperatureObject, float] = dict()
+        object_heat.update({node: 0 for node in interface.nodes}) # net heat for wall nodes
+        object_heat.update({border: 0 for border in interface.border}) # net heat for bordering objects
 
         for layer in interface.layers:
             for node in layer.nodes:
@@ -16,27 +30,23 @@ class HeatFlow:
                     prev_node = node
                     continue
 
-                heat_flux = Conduction.heat_flux(prev_node, node, layer.material, NODE_DISTANCE)
-                heat = heat_flux * TIME_STEP * interface.area
+                heat_flux = Conduction.heat_flux(prev_node, node, layer.material, Config().NODE_DISTANCE)
+                heat = heat_flux * Config().TIME_STEP * interface.area
 
-                node_heat[node] -= heat
-                node_heat[prev_node] += heat
+                object_heat[node] -= heat
+                object_heat[prev_node] += heat
 
                 prev_node = node
 
 
         for bordering_air, bordering_node in ((interface.border[0], interface.layers[0].nodes[0]), (interface.border[1], interface.layers[-1].nodes[-1])):
             heat_flux = Convection.heat_flux(bordering_node, bordering_air, interface.height)
-            heat = heat_flux * TIME_STEP * interface.area
+            heat = heat_flux * Config().TIME_STEP * interface.area
 
-            node_heat[bordering_node] -= heat
-            border_heat[bordering_air] += heat
+            object_heat[bordering_node] -= heat
+            object_heat[bordering_air] += heat
         
-        for node in node_heat:
-            node.update_temperature(node_heat[node])
-
-        for border in border_heat:
-            border.update_temperature(border_heat[border])
+        return object_heat
 
 
 class Conduction:

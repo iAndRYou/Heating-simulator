@@ -1,5 +1,5 @@
 from math import prod
-from .model_parameters import NODE_DISTANCE, TIME_STEP
+from .model_parameters import Config
 from enum import Enum
 
 #visualization
@@ -19,7 +19,7 @@ class ObjectLayer:
         self.material = material
         self.parent_object = parent_object
 
-        self.nodes = [UniformTemperatureObject(init_temperature_celsius, material, self.parent_object.area*NODE_DISTANCE) for _ in range(int(thickness // NODE_DISTANCE))]
+        self.nodes = [UniformTemperatureObject(init_temperature_celsius, material, self.parent_object.area*Config().NODE_DISTANCE) for _ in range(int(thickness // Config().NODE_DISTANCE))]
 
 
 #visualization
