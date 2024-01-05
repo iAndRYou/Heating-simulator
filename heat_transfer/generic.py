@@ -57,7 +57,7 @@ class Object3D:
             parent.children.append(self) 
         self.update_position()     
     
-    def set_position(position : vector):
+    def set_position(self, position : vector):
         self.local_position = position
         self.update_position()
          
@@ -90,7 +90,7 @@ class MultiLayerObject(Object3D):
     width: float
     border: list["UniformTemperatureObject"]
 
-    def __init__(self, height, width, init_temperature_celsius: float, layers: list[list[float, "Material"]], border: list["UniformTemperatureObject"], openings: list["MultiLayerObject"] = [], #dict[tuple[float, float], "MultiLayerObject"] = dict(),
+    def __init__(self, height, width, init_temperature_celsius: float, layers: list[list[float, "Material"]], border: list["UniformTemperatureObject"], openings: list["MultiLayerObject"] = list(), #dict[tuple[float, float], "MultiLayerObject"] = dict(),
                 local_position = vector(0, 0, 0), parent: "Object3D" = None):
         self.height = height
         self.width = width
