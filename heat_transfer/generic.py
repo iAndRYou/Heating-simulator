@@ -1,5 +1,6 @@
 from math import prod
 from .model_parameters import NODE_DISTANCE, TIME_STEP
+from enum import Enum
 
 # from .models.object_layer import ObjectLayer
 
@@ -38,6 +39,10 @@ class MultiLayerObject:
     def area(self):
         return self.height * self.width
 
+    @property
+    def nodes(self):
+        return [node for layer in self.layers for node in layer.nodes]
+
     
 class HeatingSystem:
     def __init__(self, name, power, temperature):
@@ -72,7 +77,7 @@ class UniformTemperatureObject:
     def mass(self) -> float:
         return self.volume * self.material.density
 
-    def heat_flow(self, heat: int):
+    def update_temperature(self, heat: int):
         if self.volume is not None:
             self.temperature += heat / (self.material.specific_heat_capacity * self.mass)
 

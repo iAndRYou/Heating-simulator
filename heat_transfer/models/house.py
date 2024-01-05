@@ -1,5 +1,6 @@
 from .room import *
 from ..generic import MultiLayerObject, Material, UniformTemperatureObject
+from ..heat_flow import HeatFlow
 
 
 def reverse_direction(direction):
@@ -36,3 +37,14 @@ class House:
                 room2.walls[reverse_direction(direction)] = room.walls[direction]
 
     
+    def print_rooms_temperatures(self):
+        print("ROOMS:")
+        for room in self.rooms:
+            print(room.temperature - 273.15, "°C")
+        print("ENVIRONMENT:", ENVIRONMENT.temperature - 273.15, "°C")
+        print("GROUND:", GROUND.temperature - 273.15, "°C")
+    
+    def update_temperature(self):
+        for room in self.rooms:
+            for wall in room.walls:
+                HeatFlow.update_temperature_at_interface(wall)
