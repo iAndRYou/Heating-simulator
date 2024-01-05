@@ -38,9 +38,9 @@ house.print_rooms_temperatures()
 node_temperatures1 = [node.temperature for node in house.rooms[0].walls[0].nodes]
 
 
-for _ in range(15):
-    # time step - 5s, so the whole loop is 5 hours
-    for __ in range(3600):
+for _ in range(25):
+    # time step - 5s, so the whole loop is 15 hours
+    for __ in range(10800):
         house.update_temperature()
 
     house.update_visuals()

@@ -3,8 +3,8 @@ from ..generic import *
 
 
 AIR = Material(1225, 1005, 0.024)
-ENVIRONMENT = UniformTemperatureObject(0, Material(1225, 1005, 0.024))
-GROUND = UniformTemperatureObject(0, Material(1225, 1005, 0.024))
+ENVIRONMENT = UniformTemperatureObject(15, Material(1225, 1005, 0.024))
+GROUND = UniformTemperatureObject(15, Material(1225, 1005, 0.024))
 
 class Room(UniformTemperatureObject, Object3D):
     dimensions: tuple[float, float, float]
