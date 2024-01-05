@@ -67,9 +67,9 @@ class House(Object3D):
             x *= -1 if i>1 else 1
             wall = MultiLayerObject(room.dimensions[2], room.dimensions[i%2], 20, wall_layers, border=([room, ENVIRONMENT] if i<2 else [ENVIRONMENT, room]), openings=list(), 
                                                local_position=vector(x, 0, z), parent=room)
-            print("new wall", wall.openings)
+           # print("new wall", wall.openings)
             room.walls.append(wall)
-            self.add_openings(wall, i)
+            #self.add_openings(wall, i)
             
 
     def add_openings(self, wall : MultiLayerObject, i : int):    

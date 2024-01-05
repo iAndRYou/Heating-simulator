@@ -7,19 +7,19 @@ from vpython import *
 
 
 
-room1 = Room((6, 3, 3), 
+room1 = Room((6, 4, 6), 
              40,
-             local_position=vector(0, 0, 0),
+             local_position=vector(0, 0, -4.5),
              parent=None)
 
-room2 = Room((3, 3, 3),
+room2 = Room((6, 4, 3),
             20,
-            local_position=vector(6, 0, 0),
+            local_position=vector(0, 0, 0),
             parent=None)
 
 room3 = Room((6, 4, 3),
             20,
-            local_position=vector(0, 3, 0),
+            local_position=vector(0, 4, 0),
             parent=None)
 
 house = House([room1, room2, room3],
@@ -27,10 +27,11 @@ house = House([room1, room2, room3],
               wall_layers=[(0.1, Material(2500, 800, 1.4))],
               roof_layers=[(0.1, Material(1225, 1005, 0.024))],
               floor_layers=[(0.1, Material(1225, 1005, 0.024))],
-              local_position=vector(-1.5, 0, 0))
+              local_position=vector(0, 0, 0))
 
 room1.make_box(temperature=room1.temperature)
 room2.make_box(temperature=room2.temperature)
+room3.make_box(temperature=room3.temperature)
 
 
 house.print_rooms_temperatures()
@@ -39,7 +40,7 @@ node_temperatures1 = [node.temperature for node in house.rooms[0].walls[0].nodes
 for _ in range(5000):
     house.update_temperature()
 
-Config().TIME_STEP = 3
+Config().TIME_STEP = 30
 
 for _ in range(50000):
     house.update_temperature()
