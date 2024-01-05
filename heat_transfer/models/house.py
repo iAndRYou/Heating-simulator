@@ -6,15 +6,19 @@ from ..heat_flow import HeatFlow
 def reverse_direction(direction):
     return (direction+2) if direction%2==direction else (direction-2)
 
-class House:
+class House(Object3D):
     rooms: list[Room]
     room_connections: dict[Room, list[tuple[Room, int]]] = dict()
 
-    def __init__(self, rooms: list[Room], interfaces, wall_layers, roof_layers, floor_layers):
+    def __init__(self, rooms: list[Room], interfaces, wall_layers, roof_layers, floor_layers,
+                 local_position = vector(0, 0, 0)):
+        Object3D.__init__(self, dimensions=vector(0, 0, 0), local_position=local_position)
         self.rooms = rooms
 
         visited_interfaces = set()
         for room in self.rooms:
+            room.set_parent(self) # visually group rooms together
+            
             self.room_connections[room] = []
             for interface in interfaces:
                 interface_rooms, direction = interface

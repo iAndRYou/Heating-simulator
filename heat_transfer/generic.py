@@ -2,6 +2,10 @@ from math import prod
 from .model_parameters import NODE_DISTANCE, TIME_STEP
 from enum import Enum
 
+#visualization
+from vpython import *
+from colorsys import hsv_to_rgb
+
 # from .models.object_layer import ObjectLayer
 
 class ObjectLayer:
@@ -18,18 +22,83 @@ class ObjectLayer:
         self.nodes = [UniformTemperatureObject(init_temperature_celsius, material, self.parent_object.area*NODE_DISTANCE) for _ in range(int(thickness // NODE_DISTANCE))]
 
 
-class MultiLayerObject:
+#visualization
+class Object3D:
+    local_position : vector
+    global_position : vector
+    size : vector
+    parent : "Object3D"
+    children : list["Object3D"]
+    shape : box
+    def __init__(self, local_position : vector, dimensions : vector, parent : "Object3D" = None):
+        self.local_position = local_position
+        self.size = dimensions
+        self.children = []
+        self.shape = None
+        self.set_parent(parent)
+
+        
+    def update_position(self):
+        if self.parent:
+            self.global_position = self.parent.global_position + self.local_position
+        else:
+            self.global_position = self.local_position
+        if self.shape:
+            self.shape.pos = self.global_position
+        self.update_children()
+         
+    def update_children(self):
+        for child in self.children:
+            child.update_position()   
+            
+    def set_parent(self, parent):
+        self.parent = parent
+        if parent != None and self not in parent.children and parent != self:
+            parent.children.append(self) 
+        self.update_position()     
+    
+    def set_position(position : vector):
+        self.local_position = position
+        self.update_position()
+         
+            
+    def make_box(self, color=None, temperature=None, opacity=0.8):
+        if(temperature != None):
+            color = self.map_temperature_to_color(temperature)
+        self.shape = box(pos=self.global_position, size=self.size, opacity=opacity, color=color)
+        
+    def map_temperature_to_color(self, temperature):
+        normalized_temperature = (temperature + 50) / 100 # temp scale from -50 to 50
+        h = 1 * (1 - normalized_temperature)  # H 
+        s = 0.8  # Saturation
+        v = 1.0  # Value
+        
+        color_rgb = hsv_to_rgb(h, s, v)
+        return vector(color_rgb[0], color_rgb[1], color_rgb[2])
+   
+    def on_temperature_change(self, temperature):
+        if self.shape:
+            self.shape.color = self.map_temperature_to_color(temperature)
+            
+#utility functions 
+def tuple_to_vector(tup):
+    return vector(tup[0], tup[1], tup[2])
+
+
+class MultiLayerObject(Object3D):
     layers: list[ObjectLayer]
     height: float
     width: float
     border: list["UniformTemperatureObject"]
 
-    def __init__(self, height, width, init_temperature_celsius: float, layers: list[list[float, "Material"]], border: list["UniformTemperatureObject"], openings: dict[tuple[float, float], "MultiLayerObject"] = dict()):
+    def __init__(self, height, width, init_temperature_celsius: float, layers: list[list[float, "Material"]], border: list["UniformTemperatureObject"], openings: dict[tuple[float, float], "MultiLayerObject"] = dict(),
+                local_position = vector(0, 0, 0), parent: "Object3D" = None):
         self.height = height
         self.width = width
         self.layers: list[ObjectLayer] = [ObjectLayer(init_temperature_celsius, thickness, material, self) for thickness, material in layers]
         self.openings = openings
         self.border = border
+        super().__init__(dimensions=vector(self.width, self.height, self.thickness), local_position=local_position, parent=parent)
         
     @property   
     def thickness(self):
@@ -82,3 +151,4 @@ class UniformTemperatureObject:
             self.temperature += heat / (self.material.specific_heat_capacity * self.mass)
 
         # else:  infinite heat capacity -> temperature does not change
+
