@@ -9,7 +9,7 @@ from vpython import *
 
 room1 = Room((6, 4, 6), 
              40,
-             local_position=vector(0, 0, -4.5),
+             local_position=vector(0, 0, 4.5),
              parent=None)
 
 room2 = Room((6, 4, 3),
@@ -19,7 +19,7 @@ room2 = Room((6, 4, 3),
 
 room3 = Room((6, 4, 3),
             20,
-            local_position=vector(0, 4, 0),
+            local_position=vector(6, 0, 0),
             parent=None)
 
 house = House([room1, room2, room3],
