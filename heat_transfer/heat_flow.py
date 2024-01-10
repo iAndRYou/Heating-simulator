@@ -1,7 +1,8 @@
-from typing import List, Dict, Tuple, Any
 from .generic import *
 from .model_parameters import Config
 from .models.room import *
+from .models.layered_objects import MultiLayerObject
+
 
 class HeatFlow:
     @staticmethod
@@ -79,7 +80,7 @@ class Convection:
 
         nusselt_number = 0.59 * rayleigh_number**0.25
 
-        heat_transfer_coefficient = nusselt_number * AIR.conductivity / characteristic_length
+        heat_transfer_coefficient = nusselt_number * Config().AIR.conductivity / characteristic_length
 
         heat_flux = heat_transfer_coefficient * (bordering_node.temperature - bordering_air.temperature)
 

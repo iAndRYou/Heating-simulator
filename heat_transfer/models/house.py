@@ -1,6 +1,8 @@
 from .room import *
-from ..generic import MultiLayerObject, Material, UniformTemperatureObject
+from .layered_objects import MultiLayerObject
+from ..generic import Material, UniformTemperatureObject
 from ..heat_flow import HeatFlow
+from ..model_parameters import Config
 
 
 def reverse_direction(direction):
@@ -33,8 +35,8 @@ class House(Object3D):
         for room in self.rooms:
             self.generate_walls(room, wall_layers)
             #room.walls = [MultiLayerObject(room.dimensions[2], room.dimensions[i%2], 20, wall_layers, border=([room, ENVIRONMENT] if i<2 else [ENVIRONMENT, room])) for i in range(4)]
-            room.roof = MultiLayerObject(room.dimensions[0], room.dimensions[1], 20, roof_layers, border=[room, ENVIRONMENT])
-            room.floor = MultiLayerObject(room.dimensions[0], room.dimensions[1], 20, floor_layers, border=[GROUND, room])
+            room.roof = MultiLayerObject(room.dimensions[0], room.dimensions[1], 20, roof_layers, border=[room, Config().ENVIRONMENT])
+            room.floor = MultiLayerObject(room.dimensions[0], room.dimensions[1], 20, floor_layers, border=[Config().GROUND, room])
         
         for room in self.rooms:
             for room2, direction in self.room_connections[room]:
@@ -46,8 +48,8 @@ class House(Object3D):
         print("ROOMS:")
         for room in self.rooms:
             print(room.temperature - 273.15, "°C")
-        print("ENVIRONMENT:", ENVIRONMENT.temperature - 273.15, "°C")
-        print("GROUND:", GROUND.temperature - 273.15, "°C")
+        print("ENVIRONMENT:", Config().ENVIRONMENT.temperature - 273.15, "°C")
+        print("GROUND:", Config().GROUND.temperature - 273.15, "°C")
     
     def update_temperature(self):
         HeatFlow.update_temperature([wall for room in self.rooms for wall in room.walls])
@@ -66,7 +68,7 @@ class House(Object3D):
             z = 0 if i%2==1 else offset_value
             z *= -1 if i>1 else 1
             x *= -1 if i>1 else 1
-            wall = MultiLayerObject(room.dimensions[2], room.dimensions[i%2], 20, wall_layers, border=([room, ENVIRONMENT] if i<2 else [ENVIRONMENT, room]), openings=list(), 
+            wall = MultiLayerObject(room.dimensions[2], room.dimensions[i%2], 20, wall_layers, border=([room, Config().ENVIRONMENT] if i<2 else [Config().ENVIRONMENT, room]), openings=list(), 
                                                local_position=vector(x, 0, z), parent=room)
            # print("new wall", wall.openings)
             room.walls.append(wall)
@@ -76,8 +78,8 @@ class House(Object3D):
     def add_openings(self, wall : MultiLayerObject, i : int):    
         if(len(wall.openings) == 0):
             #return
-            wall.openings.append(MultiLayerObject(0.5, 0.5, 20, [(0.1, Material(1225, 1005, 0.024))], border=[wall, ENVIRONMENT], local_position=vector(0, 0, 0), parent=None))
-            wall.openings.append(MultiLayerObject(0.5, 0.5, 20, [(0.1, Material(1225, 1005, 0.024))], border=[wall, ENVIRONMENT], local_position=vector(0, 0, 0), parent=None))
+            wall.openings.append(MultiLayerObject(0.5, 0.5, 20, [(0.1, Material(1225, 1005, 0.024))], border=[wall, Config().ENVIRONMENT], local_position=vector(0, 0, 0), parent=None))
+            wall.openings.append(MultiLayerObject(0.5, 0.5, 20, [(0.1, Material(1225, 1005, 0.024))], border=[wall, Config().ENVIRONMENT], local_position=vector(0, 0, 0), parent=None))
         num_openings = len(wall.openings)
         distance_between_openings = wall.width/(num_openings+1)
         initial_position = -wall.width/2 + distance_between_openings

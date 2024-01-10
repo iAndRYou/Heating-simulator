@@ -1,5 +1,12 @@
+from .generic import UniformTemperatureObject, Material
+
+
 TIME_STEP = 5 # s
 NODE_DISTANCE = 0.01 # m
+AIR = Material(1225, 1005, 0.024)
+ENVIRONMENT = UniformTemperatureObject(15, Material(1225, 1005, 0.024))
+GROUND = UniformTemperatureObject(15, Material(1225, 1005, 0.024))
+
 
 class Config:
     _shared_state = dict()
@@ -15,4 +22,6 @@ class Config:
 
 Config().TIME_STEP = TIME_STEP
 Config().NODE_DISTANCE = NODE_DISTANCE
-
+Config().AIR = AIR
+Config().ENVIRONMENT = ENVIRONMENT
+Config().GROUND = GROUND

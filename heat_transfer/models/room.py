@@ -1,10 +1,9 @@
 from .heating_systems import *
+from .layered_objects import MultiLayerObject
 from ..generic import *
+from ..model_parameters import Config
 
 
-AIR = Material(1225, 1005, 0.024)
-ENVIRONMENT = UniformTemperatureObject(15, Material(1225, 1005, 0.024))
-GROUND = UniformTemperatureObject(15, Material(1225, 1005, 0.024))
 
 class Room(UniformTemperatureObject, Object3D):
     dimensions: tuple[float, float, float]
@@ -14,7 +13,7 @@ class Room(UniformTemperatureObject, Object3D):
 
     def __init__(self, dimensions, init_temperature_celsius,
                  local_position = vector(0, 0, 0), parent: "Object3D" = None):
-        super().__init__(init_temperature_celsius, AIR, prod(dimensions))
+        super().__init__(init_temperature_celsius, Config().AIR, prod(dimensions))
 
         self.dimensions = dimensions
         self.walls = []
