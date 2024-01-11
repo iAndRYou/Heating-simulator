@@ -51,8 +51,8 @@ class Object3D:
         
     def map_temperature_to_color(self, temperature_kelvin):
         temperature = temperature_kelvin - 273.15 # convert to celsius
-        normalized_temperature = (temperature + 50) / 100 # temp scale from -50 to 50
-        h = 1 * (1 - normalized_temperature)  # H 
+        normalized_temperature = 0.6 - 0.6*(temperature + 20)/70 # temp scale from -10 to 40, accepted 0, 40
+        h = normalized_temperature #(1 - normalized_temperature)  # H 
         s = 0.8  # Saturation
         v = 1.0  # Value
         

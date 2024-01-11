@@ -6,21 +6,22 @@ from matplotlib import pyplot as plt
 from vpython import *
 
 
-
+# x - szerokość, y -wysokość, z - długość
 room1 = Room((6, 4, 6), 
-             40,
+             18,
              local_position=vector(0, 0, 4.5),
              parent=None)
 
 room2 = Room((6, 4, 3),
-            20,
+            25,
             local_position=vector(0, 0, 0),
             parent=None)
 
 room3 = Room((6, 4, 3),
-            20,
+            30,
             local_position=vector(6, 0, 0),
             parent=None)
+
 
 house = House([room1, room2, room3],
               interfaces=[[[room2, room1], 1], [[room2, room3], 0]],
