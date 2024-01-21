@@ -1,4 +1,3 @@
-from .heating_systems import *
 from .layered_objects import MultiLayerObject
 from ..generic import *
 from ..model_parameters import Config

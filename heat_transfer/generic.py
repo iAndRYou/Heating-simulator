@@ -18,10 +18,8 @@ class Direction:
 
     
 class HeatingSystem:
-    def __init__(self, name, power, temperature):
-        self.name = name
-        self.power = power
-        self.temperature = temperature
+    def heat_flow(self) -> dict["UniformTemperatureObject", float]:
+        raise NotImplementedError
 
 
 class Material:

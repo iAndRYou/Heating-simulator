@@ -2,33 +2,46 @@ from heat_transfer.models.room import *
 from heat_transfer.models.house import *
 from heat_transfer.generic import *
 from heat_transfer.model_parameters import Config
+from heat_transfer.models.heating_systems import *
 from matplotlib import pyplot as plt
 import numpy as np
 from vpython import *
 
-# fig, ax = plt.subplots(1, 1)
-# ax.set_aspect('equal')
-# ax.set_xlim(0, 100)
-# ax.set_ylim(0, 100)
-# # ax.hold(True)
-# plt.show(False)
-# plt.draw()
-# background = fig.canvas.copy_from_bbox(ax.bbox)
-# x, y = 0, 0
-# points_ = ax.plot(x, y, 'o')[0]
 
-# def plot_temperature_logs(hours_passed: int, room_temperature: float):
-#     # for i, temperature_log in enumerate(temperature_logs):
-#     #     plt.plot(temperature_log, label=f"room {i+1}")
-#     points_.set_data((hours_passed, room_temperature))
-#     # restore background
-#     fig.canvas.restore_region(background)
 
-#     # redraw just the points
-#     ax.draw_artist(points_)
+class Plot:
+    def __init__(self, rooms: list[Room]):
+        self.fig, self.ax = plt.subplots()
 
-#     # fill in the axes rectangle
-#     fig.canvas.blit(ax.bbox)
+        self.rooms = rooms
+        self.x_data = []
+        self.y_data = {room.id: [] for room in rooms}
+        self.lines = {room.id: self.ax.plot(self.x_data, self.y_data[room.id], '-')[0] for room in rooms}
+
+        # Set plot limits
+        self.ax.set_xlim(0, 100)
+        self.ax.set_ylim(0, 50)
+        self.ax.set_xlabel("Time [h]")
+        self.ax.set_ylabel("Temperature [°C]")
+        # set legend
+        self.ax.legend([f"Room {room.id}" for room in rooms])
+    
+    def update(self, hours_passed: int):
+        self.x_data.append(hours_passed)
+        for room in self.rooms:
+            self.y_data[room.id].append(room.temperature - 273.15)
+
+            # Update plot
+            self.lines[room.id].set_xdata(self.x_data)
+            self.lines[room.id].set_ydata(self.y_data[room.id])
+
+        self.ax.relim()
+        self.ax.autoscale_view()
+
+        # Refresh the plot
+        plt.draw()
+        plt.pause(0.5)
+
 
 
 # x - szerokość, y -wysokość, z - długość
@@ -78,12 +91,14 @@ room3 = Room(3,
             vector(0, 0, 3),
             parent=None)
 
+heating_system = RadiatorHeating(rooms=[room1, room2, room3])
 
 house = House([room1, room2, room3],
               interfaces=[[[room2, room1], Direction(Axis.X, True)], [[room2, room3], Direction(Axis.Z, True)]],
               wall_layers=[(0.1, Material(2500, 800, 1.4))],
               roof_layers=[(0.1, Material(2500, 800, 1.4))],
               floor_layers=[(0.1, Material(2500, 800, 1.4))],
+              heating_system=heating_system,
               local_position=vector(0, 0, 0))
 
 
@@ -111,11 +126,13 @@ room2.visualize_openings()
 room3.visualize_openings()
 
 
+plot = Plot(rooms=[room1, room2, room3])
+
 room_temp_text = wtext(text=house.print_rooms_temperatures())
 time_elapsed_text = wtext(text="0 hours passed")
 # node_temperatures1 = [node.temperature for node in house.rooms[0].walls[0].nodes
 
-room_temperature_logs = [[room.temperature] for room in house.rooms]
+room_temperature_logs = {room.id: [room.temperature] for room in house.rooms}
 UPDATE_STEP = 3 # in hours
 
 for i in range(50):
@@ -124,7 +141,7 @@ for i in range(50):
         scene_update()
     house.update_visuals()
     room_temp_text.text = house.print_rooms_temperatures()
-    # plot_temperature_logs(UPDATE_STEP*(i+1), room1.temperature - 273.15)
+    plot.update(UPDATE_STEP*(i+1))
     time_elapsed_text.text = str(UPDATE_STEP*(i+1))+" hours passed"
     print(UPDATE_STEP*(i+1), "hours passed")
 

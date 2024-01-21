@@ -7,8 +7,11 @@ import numpy as np
 
 class HeatFlow:
     @staticmethod
-    def update_temperature(interfaces: list[MultiLayerObject]):
+    def update_temperature(heating_system: HeatingSystem, interfaces: list[MultiLayerObject]):
         object_heat: dict[UniformTemperatureObject, float] = dict()
+
+        object_heat.update(heating_system.heat_flow())
+
         for interface in interfaces:
             for object, heat in HeatFlow.update_temperature_at_interface(interface).items():
                 if object in object_heat:

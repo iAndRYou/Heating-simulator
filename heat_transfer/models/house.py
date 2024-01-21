@@ -15,10 +15,11 @@ class House(Object3D):
     rooms: list[Room]
     room_connections: dict[Room, list[tuple[Room, Direction]]] = dict()
 
-    def __init__(self, rooms: list[Room], interfaces, wall_layers, roof_layers, floor_layers,
+    def __init__(self, rooms: list[Room], interfaces, wall_layers, roof_layers, floor_layers, heating_system: HeatingSystem,
                  local_position = vector(0, 0, 0)):
         Object3D.__init__(self, dimensions=vector(0, 0, 0), local_position=local_position)
         self.rooms = rooms
+        self.heating_system = heating_system
 
         visited_interfaces = set()
         for room in self.rooms:
@@ -61,7 +62,8 @@ class House(Object3D):
     
     def update_temperature(self):
         walls = [wall for room in self.rooms for wall in room.walls.values()]
-        HeatFlow.update_temperature(walls
+        HeatFlow.update_temperature(self.heating_system,
+                                    walls
                                     + [room.roof for room in self.rooms]
                                     + [room.floor for room in self.rooms]
                                     + [opening for wall in walls for opening in wall.openings])

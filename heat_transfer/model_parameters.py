@@ -8,6 +8,7 @@ GLASS = Material(2500, 840, 1)
 WOOD = Material(300, 1800, 0.1)
 ENVIRONMENT = UniformTemperatureObject(15, Material(1225, 1005, 0.024), object_type="environment")
 GROUND = UniformTemperatureObject(15, Material(1500, 1200, 1), object_type="ground")
+TARGET_TEMPERATURE = 293.15 # K
 
 
 class Config:
@@ -18,6 +19,7 @@ class Config:
     WOOD: Material
     ENVIRONMENT: UniformTemperatureObject
     GROUND: UniformTemperatureObject
+    TARGET_TEMPERATURE: float
 
     _shared_state = dict()
 
@@ -37,3 +39,4 @@ Config().GLASS = GLASS
 Config().WOOD = WOOD
 Config().ENVIRONMENT = ENVIRONMENT
 Config().GROUND = GROUND
+Config().TARGET_TEMPERATURE = TARGET_TEMPERATURE
