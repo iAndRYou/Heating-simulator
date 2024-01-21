@@ -6,19 +6,36 @@ def tuple_to_vector(tup):
     return vector(tup[0], tup[1], tup[2])
 
 class Object3D:
-    local_position : vector
-    global_position : vector
-    size : vector
-    parent : "Object3D"
-    children : list["Object3D"]
-    shape : box
-    def __init__(self, local_position : vector, dimensions : vector, parent : "Object3D" = None):
+    local_position: vector
+    global_position: vector
+    size: vector
+    parent: "Object3D"
+    children: list["Object3D"]
+    shape: box
+
+    object_label: label
+
+    def __init__(self, local_position: vector, dimensions: vector, parent: "Object3D" = None):
         self.local_position = local_position
         self.size = dimensions
         self.children = []
         self.shape = None
         self.set_parent(parent)
-
+    
+    def get_label(self) -> str | None:
+        return None
+    
+    def get_temperature(self) -> float | None:
+        return None
+    
+    def on_temperature_change(self):
+        if self.shape:
+            new_temperature = self.get_temperature()
+            if new_temperature is not None:
+                self.shape.color = self.map_temperature_to_color(new_temperature)
+            new_label = self.get_label()
+            if new_label is not None:
+                self.object_label.text = new_label
         
     def update_position(self):
         if self.parent:
@@ -45,6 +62,10 @@ class Object3D:
          
             
     def make_box(self, color=vector(255, 255, 255), temperature=None, opacity=0.8):
+        l = self.get_label()
+        if l is not None:
+            self.object_label = label(pos=self.global_position, text=l)
+
         if(temperature != None):
             color = self.map_temperature_to_color(temperature)
         self.shape = box(pos=self.global_position, size=self.size, opacity=opacity, color=color)
