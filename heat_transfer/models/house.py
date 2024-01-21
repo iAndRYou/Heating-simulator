@@ -49,10 +49,15 @@ class House(Object3D):
     
     def print_rooms_temperatures(self):
         print("ROOMS:")
+        s = 'ROOMS:\n'
         for room in self.rooms:
             print(room.temperature - 273.15, "°C")
+            s += "\tROOM "+ str(room.id) + ": "+ str(room.temperature - 273.15) + '\n'
         print("ENVIRONMENT:", Config().ENVIRONMENT.temperature - 273.15, "°C")
+        s+= "ENVIRONMENT: "+ str(Config().ENVIRONMENT.temperature - 273.15) + '\n'
         print("GROUND:", Config().GROUND.temperature - 273.15, "°C")
+        s+= "GROUND: "+ str(Config().GROUND.temperature - 273.15) + '\n'
+        return s
     
     def update_temperature(self):
         walls = [wall for room in self.rooms for wall in room.walls.values()]

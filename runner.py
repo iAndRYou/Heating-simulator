@@ -32,6 +32,34 @@ from vpython import *
 
 
 # x - szerokość, y -wysokość, z - długość
+#### SCENE CONFIG START
+config = Config()
+def set_temp_env():
+    temp_text.text = '{:1.1f}'.format(slider_env_temp.value)
+def set_temp_ground():
+    temp_ground_text.text = '{:1.1f}'.format(slider_ground_temp.value)
+
+
+scene.title = "Heat transfer"
+scene.append_to_caption('\nEnvironment temperature\n')
+slider_env_temp = slider(min=-30, max=60, value=(config.ENVIRONMENT.temperature - 273.15), length=220, bind=set_temp_env, right=15)
+temp_text = wtext(text='{:1.1f}'.format(slider_env_temp.value))
+scene.append_to_caption('\u00b0 Celsius\n')
+
+scene.append_to_caption('Ground temperature\n')
+slider_ground_temp = slider(min=-30, max=60, value=(config.GROUND.temperature - 273.15), length=220, bind=set_temp_ground, right=15)
+temp_ground_text = wtext(text='{:1.1f}'.format(slider_ground_temp.value))
+scene.append_to_caption('\u00b0 Celsius\n')
+
+scene.append_to_caption('\nLOGS:\n')
+
+    
+def scene_update():
+    config.ENVIRONMENT.temperature = slider_env_temp.value + 273.15
+    config.GROUND.temperature = slider_ground_temp.value + 273.15
+    
+#### SCENE CONFIG END
+
 room1 = Room(1,
              (3, 4, 3), 
              13,
@@ -83,7 +111,8 @@ room2.visualize_openings()
 room3.visualize_openings()
 
 
-house.print_rooms_temperatures()
+room_temp_text = wtext(text=house.print_rooms_temperatures())
+time_elapsed_text = wtext(text="0 hours passed")
 # node_temperatures1 = [node.temperature for node in house.rooms[0].walls[0].nodes
 
 room_temperature_logs = [[room.temperature] for room in house.rooms]
@@ -92,11 +121,14 @@ UPDATE_STEP = 3 # in hours
 for i in range(50):
     for __ in range(UPDATE_STEP * 3600 // Config().TIME_STEP):
         house.update_temperature()
-
+        scene_update()
     house.update_visuals()
-    house.print_rooms_temperatures()
+    room_temp_text.text = house.print_rooms_temperatures()
     # plot_temperature_logs(UPDATE_STEP*(i+1), room1.temperature - 273.15)
+    time_elapsed_text.text = str(UPDATE_STEP*(i+1))+" hours passed"
     print(UPDATE_STEP*(i+1), "hours passed")
 
 plt.show()
 input()
+
+
