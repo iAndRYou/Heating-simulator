@@ -9,7 +9,7 @@ import numpy as np
 from vpython import *
 from heat_transfer.temperature_plot import Plot
 
-def get_environment_temperature(hours_passed):
+def get_environment_temperature_step(hours_passed):
     days = hours_passed // 24
     hours = hours_passed % 24
 
@@ -23,23 +23,29 @@ def get_environment_temperature(hours_passed):
 
     return (next_peak - previous_peak) * (hours%12) / 12 + previous_peak
 
+def get_environment_temperature_sin(hours_passed):
+    days = hours_passed // 24
+    hours = hours_passed % 24
+
+    return 15 + 7/5*days + 7/5*np.sin(2*np.pi*hours/24)
+
 
 room1 = Room(1,
-             (3, 3, 3), 
-             20,
-             vector(3, 0, 0),
+             (4, 3, 4), 
+             -5,
+             vector(5, 0, 0),
              parent=None)
 
 room2 = Room(2,
-            (3, 3, 3),
+            (6, 3, 4),
             20,
             vector(0, 0, 0),
             parent=None)
 
 room3 = Room(3,
-            (3, 3, 3),
-            20,
-            vector(0, 0, 3),
+            (6, 3, 3),
+            30,
+            vector(0, 0, 3.5),
             parent=None)
 
 heating_system = RadiatorHeating(rooms=[room1, room2], power=1200)
@@ -77,7 +83,11 @@ TIME_LIMIT = 240 # in hours
 
 plot = Plot(rooms=[room1, room2, room3], max_hours=TIME_LIMIT)
 
+hours_passed = 0
 for i in range(TIME_LIMIT // UPDATE_STEP):
+    Config().ENVIRONMENT.temperature = get_environment_temperature_sin(hours_passed) + 273.15
+    Config().GROUND.temperature = get_environment_temperature_sin(hours_passed) + 273.15
+    scene.update_slider_values()
     for j in range(UPDATE_STEP * 3600 // Config().TIME_STEP):
         house.update_temperature()
         scene.update_scene()
@@ -86,9 +96,6 @@ for i in range(TIME_LIMIT // UPDATE_STEP):
     scene.update_text(hours_passed)
     plot.update(hours_passed)
     print(f"{hours_passed} hours passed")
-    Config().ENVIRONMENT.temperature = get_environment_temperature(hours_passed) + 273.15
-    Config().GROUND.temperature = get_environment_temperature(hours_passed) + 273.15
-    scene.update_slider_values()
 
 plt.show()
 input()
