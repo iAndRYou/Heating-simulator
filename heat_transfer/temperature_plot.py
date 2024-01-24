@@ -20,12 +20,15 @@ class Plot:
         self.environment_line = self.ax.plot(self.hours_passed, self.environment_temperature_log, 'k-')[0]
 
         # Set plot limits
-        self.ax.set_xlim(0, 100)
-        self.ax.set_ylim(0, 50)
+        self.ax.set_xlim(0, max_hours)
+        self.ax.set_ylim(-10, 40)
+        self.ax.set_xticks(np.arange(0, max_hours+1, 24))
         self.ax.set_xlabel("Time [h]")
         self.ax.set_ylabel("Temperature [°C]")
         # set legend
         self.ax.legend([f"Room {room.id}" for room in rooms] + ["Environment"])
+        # grid
+        self.ax.grid(True)
     
     def update(self, hours_passed: int):
         self.hours_passed.append(hours_passed)
@@ -45,4 +48,4 @@ class Plot:
 
         # Refresh the plot
         plt.draw()
-        plt.pause(0.5)
+        plt.pause(2)

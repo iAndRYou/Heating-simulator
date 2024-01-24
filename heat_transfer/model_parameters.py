@@ -1,8 +1,8 @@
 from .generic import UniformTemperatureObject, Material
 
 
-TIME_STEP = 1 # s
-NODE_DISTANCE = 0.05 # m
+TIME_STEP = 10 # s
+NODE_DISTANCE = 0.02 # m
 TARGET_TEMPERATURE = 293.15 # K
 
 AIR = Material(1225, 700, 0.025)
@@ -10,8 +10,8 @@ GLASS = Material(2500, 840, 1)
 WOOD = Material(300, 1800, 0.1)
 CONCRETE = Material(2500, 800, 1.4)
 
-ENVIRONMENT = UniformTemperatureObject(-5, Material(1225, 1005, 0.024), object_type="environment")
-GROUND = UniformTemperatureObject(-5, Material(1500, 1200, 1), object_type="ground")
+ENVIRONMENT = UniformTemperatureObject(10, Material(1225, 1005, 0.024), object_type="environment")
+GROUND = UniformTemperatureObject(10, Material(1500, 1200, 1), object_type="ground")
 
 
 class Config:

@@ -15,8 +15,24 @@ class Direction:
     axis: Axis
     positive: bool
 
+class HeatingUnit:
+    room: "Room"
+    ind: int
+
+    def __init__(self, room: "Room", ind: int):
+        self.room = room
+        self.ind = ind
     
 class HeatingSystem:
+    heat_power: dict[HeatingUnit, float] # W
+    new_heat_power: dict[HeatingUnit, float] # W
+    last_power_update_time: float = 0 # seconds
+
+    spent_energy: float = 0 # J
+
+    def update_heat_power(self, time_passed: float) -> None:
+        self.last_power_update_time = time_passed
+
     def heat_flow(self) -> dict["UniformTemperatureObject", float]:
         raise NotImplementedError
 

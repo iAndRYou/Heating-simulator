@@ -27,35 +27,49 @@ def get_environment_temperature_sin(hours_passed):
     days = hours_passed // 24
     hours = hours_passed % 24
 
-    return 15 + 7/5*days + 7/5*np.sin(2*np.pi*hours/24)
+    return 10 + 12/5*days + 6*np.sin(2*np.pi*hours/24)
+
+def get_environment_temperature_increase(hours_passed):
+    if hours_passed < 72:
+        return 15
+    else:
+        return 30
+
+def get_environment_temperature_decrease(hours_passed):
+    if hours_passed < 72:
+        return 15
+    else:
+        return -5
 
 
 room1 = Room(1,
              (4, 3, 4), 
-             -5,
+             10,
              vector(5, 0, 0),
              parent=None)
 
 room2 = Room(2,
             (6, 3, 4),
-            20,
+            10,
             vector(0, 0, 0),
             parent=None)
 
 room3 = Room(3,
             (6, 3, 3),
-            30,
+            10,
             vector(0, 0, 3.5),
             parent=None)
 
-heating_system = RadiatorHeating(rooms=[room1, room2], power=1200)
+# heating_system = RadiatorHeating(units={room1: 2, room2: 4, room3: 2})
+# heating_system = GasFurnaceHeating(rooms=[room1, room2, room3])
+heating_system = HeatPumpHeating(rooms=[room1, room2, room3])
 
 house = House([room1, room2, room3],
               interfaces=[[[room2, room1], Direction(Axis.X, True)], [[room2, room3], Direction(Axis.Z, True)]],
               wall_layers=[(0.1, Config().CONCRETE)],
               roof_layers=[(0.1, Config().CONCRETE)],
               floor_layers=[(0.1, Config().CONCRETE)],
-            #   heating_system=heating_system,
+              heating_system=heating_system,
               local_position=vector(0, 0, 0))
 
 
@@ -78,21 +92,23 @@ house.setup_visuals()
 
 
 UPDATE_STEP = 3 # in hours
-TIME_LIMIT = 240 # in hours
+TIME_LIMIT = 144 # in hours
 
 
 plot = Plot(rooms=[room1, room2, room3], max_hours=TIME_LIMIT)
 
 hours_passed = 0
 for i in range(TIME_LIMIT // UPDATE_STEP):
-    Config().ENVIRONMENT.temperature = get_environment_temperature_sin(hours_passed) + 273.15
-    Config().GROUND.temperature = get_environment_temperature_sin(hours_passed) + 273.15
+    Config().ENVIRONMENT.temperature = get_environment_temperature_increase(hours_passed) + 273.15
+    Config().GROUND.temperature = get_environment_temperature_increase(hours_passed) + 273.15
     scene.update_slider_values()
     for j in range(UPDATE_STEP * 3600 // Config().TIME_STEP):
         house.update_temperature()
         scene.update_scene()
-    house.update_visuals()
+        heating_system.update_heat_power(hours_passed*3600 + j*Config().TIME_STEP)
     hours_passed = UPDATE_STEP*(i+1)
+
+    house.update_visuals()
     scene.update_text(hours_passed)
     plot.update(hours_passed)
     print(f"{hours_passed} hours passed")
