@@ -1,9 +1,64 @@
+from typing import Any
 from vpython import *
 from colorsys import hsv_to_rgb
+from heat_transfer.model_parameters import Config
 
 #utility functions 
 def tuple_to_vector(tup):
     return vector(tup[0], tup[1], tup[2])
+
+
+class Scene:
+    scene: canvas = scene
+
+    def __init__(self, temperature_text_update_callback):
+        self.scene.title = "Heat transfer"
+        self.scene.append_to_caption('\nEnvironment temperature\n')
+        self.slider_env_temp = slider(min=-30, max=60, value=(Config().ENVIRONMENT.temperature - 273.15), length=220, bind=self.set_temp_env, right=15)
+        self.temp_text = wtext(text='{:.2f}'.format(self.slider_env_temp.value))
+        self.scene.append_to_caption('\u00b0 Celsius\n')
+
+        self.scene.append_to_caption('Ground temperature\n')
+        self.slider_ground_temp = slider(min=-30, max=60, value=(Config().GROUND.temperature - 273.15), length=220, bind=self.set_temp_ground, right=15)
+        self.temp_ground_text = wtext(text='{:.2f}'.format(self.slider_ground_temp.value))
+        self.scene.append_to_caption('\u00b0 Celsius\n')
+
+        self.scene.append_to_caption('Target room temperature\n')
+        self.slider_target_temp = slider(min=-30, max=60, value=(Config().TARGET_TEMPERATURE - 273.15), length=220, bind=self.set_temp_target, right=15)
+        self.temp_target_text = wtext(text='{:.2f}'.format(self.slider_target_temp.value))
+        self.scene.append_to_caption('\u00b0 Celsius\n')
+
+        self.temperature_text_callback = temperature_text_update_callback
+        self.temperature_text = wtext(text=temperature_text_update_callback())
+        self.time_elapsed_text = wtext(text="0 hours passed")
+
+    def set_temp_env(self):
+        self.temp_text.text = '{:.2f}'.format(self.slider_env_temp.value)
+
+    def set_temp_ground(self):
+        self.temp_ground_text.text = '{:.2f}'.format(self.slider_ground_temp.value)
+    
+    def set_temp_target(self):
+        self.temp_target_text.text = '{:.2f}'.format(self.slider_target_temp.value)
+
+    def update_scene(self):
+        Config().ENVIRONMENT.temperature = self.slider_env_temp.value + 273.15
+        Config().GROUND.temperature = self.slider_ground_temp.value + 273.15
+        Config().TARGET_TEMPERATURE = self.slider_target_temp.value + 273.15
+
+    def update_slider_values(self):
+        self.slider_env_temp.value = Config().ENVIRONMENT.temperature - 273.15
+        self.slider_ground_temp.value = Config().GROUND.temperature - 273.15
+        self.slider_target_temp.value = Config().TARGET_TEMPERATURE - 273.15
+        self.set_temp_env()
+        self.set_temp_ground()
+        self.set_temp_target()
+
+
+    def update_text(self, hours_passed):
+        self.temperature_text.text = self.temperature_text_callback()
+        self.time_elapsed_text.text = f"{hours_passed} hours passed"
+
 
 class Object3D:
     local_position: vector

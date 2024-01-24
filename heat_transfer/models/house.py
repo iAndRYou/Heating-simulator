@@ -3,6 +3,8 @@ from .layered_objects import MultiLayerObject
 from ..generic import Material, UniformTemperatureObject, Direction, Axis
 from ..heat_flow import HeatFlow
 from ..model_parameters import Config
+from ..visualization import Object3D
+from numpy import pi
 
 from itertools import product as cartesian_product
 
@@ -15,7 +17,7 @@ class House(Object3D):
     rooms: list[Room]
     room_connections: dict[Room, list[tuple[Room, Direction]]] = dict()
 
-    def __init__(self, rooms: list[Room], interfaces, wall_layers, roof_layers, floor_layers, heating_system: HeatingSystem,
+    def __init__(self, rooms: list[Room], interfaces, wall_layers, roof_layers, floor_layers, heating_system: HeatingSystem | None = None,
                  local_position = vector(0, 0, 0)):
         Object3D.__init__(self, dimensions=vector(0, 0, 0), local_position=local_position)
         self.rooms = rooms
@@ -49,15 +51,13 @@ class House(Object3D):
 
     
     def print_rooms_temperatures(self):
-        print("ROOMS:")
-        s = 'ROOMS:\n'
+        s = "ROOMS:\n"
         for room in self.rooms:
-            print(room.temperature - 273.15, "°C")
-            s += "\tROOM "+ str(room.id) + ": "+ str(room.temperature - 273.15) + '\n'
-        print("ENVIRONMENT:", Config().ENVIRONMENT.temperature - 273.15, "°C")
-        s+= "ENVIRONMENT: "+ str(Config().ENVIRONMENT.temperature - 273.15) + '\n'
-        print("GROUND:", Config().GROUND.temperature - 273.15, "°C")
-        s+= "GROUND: "+ str(Config().GROUND.temperature - 273.15) + '\n'
+            s += f"\tROOM {room.id}: {room.temperature - 273.15:.2f} °C\n"
+        s += f"ENVIRONMENT: {Config().ENVIRONMENT.temperature - 273.15:.2f}\n"
+        s += f"GROUND: {Config().GROUND.temperature - 273.15:.2f}\n"
+
+        print(s)
         return s
     
     def update_temperature(self):
@@ -67,6 +67,11 @@ class House(Object3D):
                                     + [room.roof for room in self.rooms]
                                     + [room.floor for room in self.rooms]
                                     + [opening for wall in walls for opening in wall.openings])
+
+    def setup_visuals(self):
+        for room in self.rooms:
+            room.make_box(temperature=room.temperature)
+            room.visualize_openings()
     
     def update_visuals(self):
         for room in self.rooms:

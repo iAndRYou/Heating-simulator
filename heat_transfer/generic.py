@@ -3,7 +3,6 @@ from enum import Enum, IntEnum
 from dataclasses import dataclass
 
 from vpython import vector
-from .visualization import *
 
 class Axis(IntEnum):
     X = 0

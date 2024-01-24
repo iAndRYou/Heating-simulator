@@ -4,10 +4,11 @@ from .room import *
 
 
 class RadiatorHeating(HeatingSystem):
-    heat_power: float = 1000 # W
+    heat_power: float # W
 
-    def __init__(self, rooms: list[Room]):
+    def __init__(self, rooms: list[Room], power: float = 1000):
         self.rooms = rooms
+        self.heat_power = power
 
     def heat_flow(self) -> dict[UniformTemperatureObject, float]:
         object_heat: dict[UniformTemperatureObject, float] = dict()

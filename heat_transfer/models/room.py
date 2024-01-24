@@ -1,6 +1,7 @@
 from .layered_objects import MultiLayerObject
 from ..generic import *
 from ..model_parameters import Config
+from ..visualization import Object3D, tuple_to_vector
 
 
 

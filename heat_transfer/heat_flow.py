@@ -7,10 +7,11 @@ import numpy as np
 
 class HeatFlow:
     @staticmethod
-    def update_temperature(heating_system: HeatingSystem, interfaces: list[MultiLayerObject]):
+    def update_temperature(heating_system: HeatingSystem | None, interfaces: list[MultiLayerObject]):
         object_heat: dict[UniformTemperatureObject, float] = dict()
 
-        object_heat.update(heating_system.heat_flow())
+        if heating_system is not None:
+            object_heat.update(heating_system.heat_flow())
 
         for interface in interfaces:
             for object, heat in HeatFlow.update_temperature_at_interface(interface).items():
@@ -64,6 +65,7 @@ class HeatFlow:
         if border1_isair:
             bordering_air = border1_object
             bordering_node = border1_outer_node
+            # print("1", interface.border)
             heat_flux = Convection.heat_flux(bordering_node, bordering_air, interface.axis1_length)
             heat = heat_flux * Config().TIME_STEP * interface.area
 
@@ -80,6 +82,7 @@ class HeatFlow:
         if border2_isair:
             bordering_air = border2_object
             bordering_node = border2_outer_node
+            # print("2", interface.border)
             heat_flux = Convection.heat_flux(bordering_node, bordering_air, interface.axis1_length)
             heat = heat_flux * Config().TIME_STEP * interface.area
 
@@ -112,26 +115,19 @@ class Conduction:
 class Convection:
     @staticmethod
     def heat_flux(bordering_node: UniformTemperatureObject, bordering_air: UniformTemperatureObject, characteristic_length: float):
-        # assumptions for grashof number calculation:
-        # k = 0.026 W/(m*K)
-        # kinematic viscosity = 1.5 * 10^-5 m^2/s
-        # g = 9.81 m/s^2
-        # specific heat = 1005 J/(kg*K)
-        # thermal expansion coefficient is the inverse of the temperature in K
-        # characteristic length = height of the wall
+        g = 9.81
+        beta = 1 / bordering_node.temperature
+        delta_T = abs(bordering_node.temperature - bordering_air.temperature)
+        L = characteristic_length
+        nu = 1.5 * 10**-5
+        k = Config().AIR.conductivity
+        Pr = 0.71
 
-        prandtl_number = 0.71
-        grashof_number = 88979591837 * characteristic_length**3 * abs(bordering_node.temperature - bordering_air.temperature) / bordering_air.temperature 
-        
-        rayleigh_number = grashof_number * prandtl_number
+        Gr = g * beta * delta_T * L**3 / nu**2
 
-        # assumptions for nusselt number calculation:
-        # 10^4 < Ra < 10^9
-        # => constants C=0.59 and n=0.25
+        Nu = 0.68 + (0.67 * (Gr * Pr)**(1/3)) / (1 + (0.492 / Pr)**(9/16))**(4/9)
 
-        nusselt_number = 0.59 * rayleigh_number**0.25
-
-        heat_transfer_coefficient = nusselt_number * Config().AIR.conductivity / characteristic_length
+        heat_transfer_coefficient = Nu * k / L
 
         heat_flux = heat_transfer_coefficient * (bordering_node.temperature - bordering_air.temperature)
 
